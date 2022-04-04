@@ -2,13 +2,12 @@ package com.example.server.controller;
 
 
 import cn.afterturn.easypoi.excel.ExcelExportUtil;
-import cn.afterturn.easypoi.excel.ExcelImportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
-import cn.afterturn.easypoi.excel.entity.ImportParams;
 import cn.afterturn.easypoi.excel.entity.enmus.ExcelType;
-import com.example.server.entity.Role;
+import com.example.server.entity.Cart;
 import com.example.server.entity.User;
 import com.example.server.entity.UserInfo;
+import com.example.server.service.ICartService;
 import com.example.server.service.IRoleService;
 import com.example.server.service.IUserService;
 import com.example.server.utils.PageBean;
@@ -18,18 +17,19 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
- *  前端控制器
+ * 前端控制器
  * </p>
  *
  * @author xueminglu
@@ -44,12 +44,14 @@ public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
+    private ICartService cartService;
+    @Autowired
     private IRoleService roleService;
 
     @ApiOperation(value = "导出用户资料")
     @GetMapping("/export")
-    public void exportUser(HttpServletResponse response){
-        List<UserInfo> userList=userService.getUserList();
+    public void exportUser(HttpServletResponse response) {
+        List<UserInfo> userList = userService.getUserList();
         ExportParams params = new ExportParams("用户表", "用户表", ExcelType.HSSF);
         Workbook workbook = ExcelExportUtil.exportExcel(params, UserInfo.class, userList);
         ServletOutputStream outputStream = null;
@@ -102,12 +104,12 @@ public class UserController {
 
     @ApiOperation(value = "添加用户")
     @PostMapping("/add")
-    public RespBean addUser(@RequestBody User user){
-        if (user.getPassword()!=null){
+    public RespBean addUser(@RequestBody User user) {
+        if (user.getPassword() != null) {
             String encode = passwordEncoder.encode(user.getPassword());
             user.setPassword(encode);
         }
-        if (userService.save(user)){
+        if (userService.save(user)) {
             return RespBean.success("新增成功");
         }
         return RespBean.error("新增失败");
@@ -117,15 +119,15 @@ public class UserController {
     @GetMapping("/all")
     public PageBean getAllUser(@RequestParam(defaultValue = "1") Integer currentPage,
                                @RequestParam(defaultValue = "10") Integer size,
-                               UserInfo userInfo){
-        return userService.getUserPage(currentPage,size,userInfo);
+                               UserInfo userInfo) {
+        return userService.getUserPage(currentPage, size, userInfo);
 
     }
 
     @ApiOperation(value = "删除用户")
     @DeleteMapping("/{id}")
-    public RespBean deleteUser(@PathVariable Integer id){
-        if (userService.removeById(id)){
+    public RespBean deleteUser(@PathVariable Integer id) {
+        if (userService.removeById(id)) {
             return RespBean.success("删除成功");
         }
         return RespBean.error("删除失败");
@@ -133,8 +135,8 @@ public class UserController {
 
     @ApiOperation(value = "更新用户")
     @PutMapping("/update")
-    public RespBean updateUser(@RequestBody User user){
-        if (userService.updateById(user)){
+    public RespBean updateUser(@RequestBody User user) {
+        if (userService.updateById(user)) {
             return RespBean.success("更新成功");
         }
         return RespBean.error("更新失败");
@@ -142,10 +144,22 @@ public class UserController {
 
     @ApiOperation(value = "批量删除职位")
     @DeleteMapping("/")
-    public RespBean deleteUsers(Integer[] ids){
-        if (userService.removeByIds(Arrays.asList(ids))){
+    public RespBean deleteUsers(Integer[] ids) {
+        if (userService.removeByIds(Arrays.asList(ids))) {
             return RespBean.success("删除成功");
         }
-        return RespBean.error("删除失败");    }
+        return RespBean.error("删除失败");
+    }
+
+    @ApiOperation(value = "根据userId,carId获取用户车辆信息")
+    @GetMapping("/getUserCar")
+    public Map<String, Object> getUserCar(int userId, int carId) {
+        User user = userService.getUser(userId);
+        Cart cart = cartService.getCar(userId,carId);
+        Map<String,Object> map=new HashMap<>();
+        map.put("user",user);
+        map.put("car",cart);
+        return map;
+    }
 
 }

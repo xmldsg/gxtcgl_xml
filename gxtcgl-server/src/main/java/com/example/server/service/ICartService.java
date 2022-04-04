@@ -3,6 +3,7 @@ package com.example.server.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.example.server.entity.Cart;
 import com.example.server.utils.PageBean;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -18,5 +19,8 @@ public interface ICartService extends IService<Cart> {
 
     PageBean getPageAllCarts(Integer currentPage, Integer size, Cart cart);
 
-    List<Cart> getAllCarts();
+    List<Cart> getAllCarts(Cart cart);
+    Cart getCar(int userId,int carId);
+
+
 }

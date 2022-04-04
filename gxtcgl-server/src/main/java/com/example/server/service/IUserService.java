@@ -46,4 +46,6 @@ public interface IUserService extends IService<User> {
     List<UserInfo> getUserList();
 
     RespBean updateAdminPass(String oldPass, String pass, Integer id);
+
+    User getUser(int userId);
 }

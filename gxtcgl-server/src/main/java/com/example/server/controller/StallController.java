@@ -1,12 +1,16 @@
 package com.example.server.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.example.server.entity.Cart;
 import com.example.server.entity.Stall;
+import com.example.server.service.ICartService;
 import com.example.server.service.IStallService;
 import com.example.server.utils.PageBean;
 import com.example.server.utils.RespBean;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +29,8 @@ public class StallController {
 
     @Autowired
     private IStallService stallService;
+    @Autowired
+    private ICartService cartService;
 
 
     @ApiOperation(value = "根据区域Id获取车位信息")
@@ -49,6 +55,24 @@ public class StallController {
     @ApiOperation(value = "修改车位")
     @PutMapping("/updateStall")
     public RespBean updateStall(@RequestBody Stall stall){
+
+        if (stallService.updateById(stall)){
+            return RespBean.success("修改成功");
+        }
+        return RespBean.error("修改失败");
+    }
+    @ApiOperation(value = "修改车位状态")
+    @PutMapping("/updateStalls")
+    @Transactional
+    public RespBean updateStalls(@RequestBody Stall stall){
+        if(stall.getStallState().equals("空位")){
+            cartService.update(new UpdateWrapper<Cart>().set("carState","未停").eq("carId",stall.getCarId()));
+            stall.setUserId(null);
+            stall.setCarId(null);
+            System.out.println(stall);
+        }else {
+            cartService.update(new UpdateWrapper<Cart>().set("carState","已停").eq("carId",stall.getCarId()));
+        }
         if (stallService.updateById(stall)){
             return RespBean.success("修改成功");
         }

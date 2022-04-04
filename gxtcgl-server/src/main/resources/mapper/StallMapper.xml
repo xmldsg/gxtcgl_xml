@@ -11,14 +11,22 @@
         <result column="areaId" property="areaId" />
         <result column="carId" property="carId"/>
         <result column="stallNature" property="stallNature"/>
+        <result column="kssj" property="kssj"/>
+        <result column="jssj" property="jssj"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        stallId, stallNum, stallState, userId, areaId,carId,stallNature
+        stallId, stallNum, stallState, userId, areaId,carId,stallNature,kssj,jssj
     </sql>
 
     <select id="countStall" resultType="int">
         select count(*) from tcgl_stall where areaId=#{areaId}
+    </select>
+    <select id="ytStall" resultType="int">
+        SELECT count(*)
+        FROM tcgl_stall AS s
+        WHERE s.areaId is not null and s.userId is not NULL
+        AND s.areaId=#{areaId}
     </select>
 </mapper>

@@ -10,6 +10,7 @@
         <result column="stallCount" property="stallCount" />
         <result column="areaNum" property="areaNum"/>
         <result column="enable" property="enable"/>
+        <result column="parent" property="parent"/>
     </resultMap>
 
     <resultMap id="getAllAreaMap" type="com.example.server.entity.Area" extends="BaseResultMap">
@@ -19,7 +20,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        areaId, address, areaName, stallCount,areaNum,enable
+        areaId, address, areaName, stallCount,areaNum,enable,parent
     </sql>
 
     <select id="getAllArea" resultMap="getAllAreaMap">

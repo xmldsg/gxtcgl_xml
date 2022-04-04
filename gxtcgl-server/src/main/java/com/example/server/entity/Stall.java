@@ -1,10 +1,8 @@
 package com.example.server.entity;
 
 import cn.afterturn.easypoi.excel.annotation.Excel;
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -42,17 +40,24 @@ public class Stall implements Serializable {
     private String stallState;
 
     @ApiModelProperty(value = "用户Id")
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private Integer userId;
 
     @ApiModelProperty(value = "区域Id")
     private Integer areaId;
 
     @ApiModelProperty(value = "车Id")
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private Integer carId;
 
     @ApiModelProperty(value = "车位类型")
     private String stallNature;
 
+    @ApiModelProperty(value = "停车时间")
+    private String kssj;
+
+    @ApiModelProperty(value = "停车结束时间")
+    private String jssj;
 
     @ApiModelProperty(value = "区域信息")
     @TableField(exist = false)

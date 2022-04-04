@@ -113,6 +113,12 @@ public class CartController {
         return RespBean.error("删除失败");
     }
 
+    @ApiOperation(value = "获取临时人员")
+    @GetMapping("/byIdGetCar")
+    public List<Cart> byIdGetCar(int userId){
+        return cartService.list(new QueryWrapper<Cart>().eq("userId",userId));
+    }
+
 
     @ApiOperation(value = "获取临时人员")
     @GetMapping("/linshi")
@@ -120,10 +126,17 @@ public class CartController {
         return userService.list(new QueryWrapper<User>().select("id","name").eq("roleId",4));
     }
 
+    @ApiOperation(value = "获取个人车辆信息")
+    @GetMapping("/getYuCar")
+    public List<Cart> getYuCar(@PathVariable Cart cart){
+       return cartService.getAllCarts(cart);
+
+    }
+
     @ApiOperation(value = "导出车辆资料")
     @GetMapping("/export")
     public void exportUser(HttpServletResponse response){
-        List<Cart> cartList=cartService.getAllCarts();
+        List<Cart> cartList=cartService.getAllCarts(null);
         ExportParams params = new ExportParams("车辆表", "车辆表", ExcelType.HSSF);
         Workbook workbook = ExcelExportUtil.exportExcel(params, Cart.class, cartList);
         ServletOutputStream outputStream = null;
@@ -147,5 +160,6 @@ public class CartController {
             }
         }
     }
+
 
 }

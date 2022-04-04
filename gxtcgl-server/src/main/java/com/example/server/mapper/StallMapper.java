@@ -16,4 +16,6 @@ import org.apache.ibatis.annotations.Mapper;
 public interface StallMapper extends BaseMapper<Stall> {
 
     int countStall(Integer areaId);
+
+    int ytStall(int areaId);
 }

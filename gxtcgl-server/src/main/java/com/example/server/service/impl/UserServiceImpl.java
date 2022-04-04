@@ -130,5 +130,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return RespBean.error("更新失败");
     }
 
+    @Override
+    public User getUser(int userId) {
+
+        return userMapper.selectById(userId);
+    }
+
 
 }

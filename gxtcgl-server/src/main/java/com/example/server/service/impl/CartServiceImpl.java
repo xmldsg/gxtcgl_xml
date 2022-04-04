@@ -1,5 +1,6 @@
 package com.example.server.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -30,7 +31,7 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements IC
     @Override
     public PageBean getPageAllCarts(Integer currentPage, Integer size, Cart cart) {
 
-        if (cart.getStall().getStallNum()!=null&&cart.getStall().getStallNum().length()!=0){
+        if (cart.getStall()!=null&&cart.getStall().getStallNum()!=null&&cart.getStall().getStallNum().length()!=0){
             String s=cart.getStall().getStallNum().substring(1);
             String s2=cart.getStall().getStallNum().substring(0,1);
             cart.getStall().setStallNum(s);
@@ -43,8 +44,15 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, Cart> implements IC
 
     }
     @Override
-    public List<Cart> getAllCarts() {
-        return cartMapper.getAllCarts();
+    public List<Cart> getAllCarts(Cart cart) {
+        return cartMapper.getAllCarts(cart);
+    }
+
+    @Override
+    public Cart getCar(int userId, int carId) {
+
+        return cartMapper.selectOne(new QueryWrapper<Cart>().eq("userId", userId).eq("carId", carId));
+
     }
 
 

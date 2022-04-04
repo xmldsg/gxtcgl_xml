@@ -22,5 +22,5 @@ public interface CartMapper extends BaseMapper<Cart> {
 
     IPage<Cart> getPageAllCarts(Page<Cart> cartPage, @Param("cart")Cart cart);
 
-    List<Cart> getAllCarts();
+    List<Cart> getAllCarts(@Param("cart") Cart cart);
 }

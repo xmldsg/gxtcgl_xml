@@ -65,10 +65,15 @@
         ta.stallCount AS stallCounta,
         ta.areaNum AS areaNuma
         FROM
-        tcgl_cart AS tc
+        tcgl_cart AS tcv
         LEFT JOIN tcgl_stall AS ts ON tc.carId = ts.carId
         LEFT JOIN tcgl_area AS ta ON ts.areaId = ta.areaId INNER JOIN tcgl_user AS tu ON tc.userId = tu.id
         LEFT JOIN tcgl_role AS tr ON tu.roleId = tr.roleId
+        <where>
+            <if test="cart!=null and cart!=''">
+                and tc.userId=#{cart.userId}
+            </if>
+        </where>
         ORDER BY
         tc.carType,
         tc.userId,
@@ -105,6 +110,7 @@
             <if test="cart.carType!=null and cart.carType!=''">
                 AND tc.carType = #{cart.carType}
             </if>
+
             <if test="cart.stall!=null">
                 <if test="cart.stall.stallNum!=null and cart.stall.stallNum!=''">
                     AND ts.stallNum = #{cart.stall.stallNum} and ts.stallNature=#{cart.stall.stallNature}

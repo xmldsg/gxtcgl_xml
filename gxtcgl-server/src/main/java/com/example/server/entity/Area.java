@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.example.server.utils.PageBean;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -12,6 +11,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * <p>
@@ -47,15 +47,20 @@ public class Area implements Serializable {
     private String areaNum;
 
     @ApiModelProperty(value = "是否启用")
-    private String enable;
+    private Boolean enable;
+
+    private Integer parent;
 
     @ApiModelProperty(value = "已设车位数量")
     @TableField(exist = false)
     private Integer count;
 
-    @ApiModelProperty(value = "分页车位")
+    @ApiModelProperty(value = "已停车位数量")
     @TableField(exist = false)
-    private PageBean stallPage;
+    private Integer yt;
+
+    @TableField(exist = false)
+    private List<Stall> stalls;
 
 
 
