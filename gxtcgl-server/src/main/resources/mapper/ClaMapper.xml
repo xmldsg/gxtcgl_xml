@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.server.mapper.ClaMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.example.server.entity.Cla">
+        <id column="id" property="id" />
+        <result column="className" property="className" />
+    </resultMap>
+
+    <resultMap id="getClaMap" type="com.example.server.entity.Cla" extends="BaseResultMap">
+        <collection property="children" ofType="com.example.server.entity.Area">
+            <id column="areaId" property="areaId" />
+            <result column="address" property="address" />
+            <result column="areaName" property="areaName" />
+            <result column="stallCount" property="stallCount" />
+            <result column="areaNum" property="areaNum"/>
+            <result column="enable" property="enable"/>
+            <result column="parent" property="parent"/>
+            <collection property="stalls" ofType="com.example.server.entity.Stall">
+                <id column="stallIds" property="stallId" />
+                <result column="stallNums" property="stallNum" />
+                <result column="stallStates" property="stallState" />
+                <result column="userIds" property="userId" />
+                <result column="areaIds" property="areaId" />
+                <result column="carIds" property="carId"/>
+                <result column="stallNatures" property="stallNature"/>
+                <result column="kssj" property="kssj"/>
+                <result column="jssj" property="jssj"/>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, className
+    </sql>
+
+    <select id="getAllCla" resultMap="getClaMap">
+       SELECT
+            c.*,a.*,  s.stallId AS stallIds,
+            s.stallNum AS stallNums,
+            s.stallState AS stallStates,
+            s.userId AS userIds,
+            s.areaId AS areaIds,
+            s.carId AS carIds,
+            s.stallNature AS stallNatures,
+            s.kssj as kssj,
+            s.jssj as jssj
+        FROM
+            tcgl_cla AS c
+        INNER JOIN tcgl_area AS a ON c.id = a.parent
+        left JOIN tcgl_stall AS s on a.areaId = s.areaId
+        WHERE
+        a. ENABLE = 1
+        ORDER BY
+            c.id,a.areaName,s.stallNum
+    </select>
+
+
+</mapper>
