@@ -35,9 +35,8 @@ public class Cart implements Serializable {
     @TableId(value = "carId", type = IdType.AUTO)
     private Integer carId;
 
-    @ApiModelProperty(value = "车辆类型")
-    @Excel(name = "车辆类型")
-    private String carType;
+    @ApiModelProperty(value = "车辆类型ID")
+    private Integer tId;
 
     @ApiModelProperty(value = "用户Id")
     private Integer userId;
@@ -54,6 +53,12 @@ public class Cart implements Serializable {
     @TableField(exist = false)
     @ExcelEntity(name = "车主姓名")
     private User user;
+
+    @ApiModelProperty(value = "车辆类型")
+    @TableField(exist = false)
+    @ExcelEntity(name = "车辆类型")
+    private CarType carType;
+
 
     @ApiModelProperty(value = "车位信息")
     @TableField(exist = false)

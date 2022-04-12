@@ -72,4 +72,14 @@ public class StallServiceImpl extends ServiceImpl<StallMapper, Stall> implements
     public int countStall(Integer areaId) {
         return stallMapper.countStall(areaId);
     }
+
+    @Override
+    public Stall getStall(int userId, int carId) {
+        return stallMapper.selectOne(new QueryWrapper<Stall>().eq("userId",userId).eq("carId",carId));
+    }
+
+    @Override
+    public List<Stall> ligetYTChest() {
+        return stallMapper.ligetYTChest();
+    }
 }

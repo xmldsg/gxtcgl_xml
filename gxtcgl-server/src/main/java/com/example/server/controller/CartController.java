@@ -116,7 +116,7 @@ public class CartController {
     @ApiOperation(value = "获取临时人员")
     @GetMapping("/byIdGetCar")
     public List<Cart> byIdGetCar(int userId){
-        return cartService.list(new QueryWrapper<Cart>().eq("userId",userId));
+        return cartService.list(new QueryWrapper<Cart>().eq("userId",userId).eq("carState","未停"));
     }
 
 
@@ -128,8 +128,10 @@ public class CartController {
 
     @ApiOperation(value = "获取个人车辆信息")
     @GetMapping("/getYuCar")
-    public List<Cart> getYuCar(@PathVariable Cart cart){
-       return cartService.getAllCarts(cart);
+    public List<Cart> getYuCar(int userId){
+        Cart cart = new Cart();
+        cart.setUserId(userId);
+        return cartService.getAllCarts(cart);
 
     }
 

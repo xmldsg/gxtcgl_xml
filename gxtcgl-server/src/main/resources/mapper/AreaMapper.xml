@@ -8,7 +8,7 @@
         <result column="address" property="address" />
         <result column="areaName" property="areaName" />
         <result column="stallCount" property="stallCount" />
-        <result column="areaNum" property="areaNum"/>
+        <result column="areaType" property="areaType"/>
         <result column="enable" property="enable"/>
         <result column="parent" property="parent"/>
     </resultMap>
@@ -20,7 +20,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        areaId, address, areaName, stallCount,areaNum,enable,parent
+        areaId, address, areaName, stallCount,areaType,enable,parent
     </sql>
 
     <select id="getAllArea" resultMap="getAllAreaMap">

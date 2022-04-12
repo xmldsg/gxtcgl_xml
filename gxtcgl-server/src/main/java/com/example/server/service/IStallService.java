@@ -24,4 +24,9 @@ public interface IStallService extends IService<Stall> {
     RespBean maxStallNum(Integer areaId);
 
     int countStall(Integer areaId);
+
+    Stall getStall(int userId, int carId);
+
+
+    List<Stall> ligetYTChest();
 }

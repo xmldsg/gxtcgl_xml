@@ -1,6 +1,7 @@
 package com.example.server.controller;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.example.server.entity.Cart;
 import com.example.server.entity.Stall;
@@ -14,6 +15,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -42,6 +48,12 @@ public class StallController {
         return stallService.getStallByAreaId(currentPage,size,areaId,request);
     }
 
+    @ApiOperation(value = "获取一停车车位信息")
+    @GetMapping("/yTChe")
+    public List<Stall> getYTChe(){
+        return stallService.ligetYTChest();
+    }
+
     @ApiOperation(value = "新增车位")
     @PostMapping("/addStall")
     public RespBean addStall(@RequestBody Stall stall){
@@ -61,17 +73,26 @@ public class StallController {
         }
         return RespBean.error("修改失败");
     }
+
     @ApiOperation(value = "修改车位状态")
     @PutMapping("/updateStalls")
     @Transactional
     public RespBean updateStalls(@RequestBody Stall stall){
-        if(stall.getStallState().equals("空位")){
+        if(stall.getStallState().equals("占位")){
+
             cartService.update(new UpdateWrapper<Cart>().set("carState","未停").eq("carId",stall.getCarId()));
+            stall.setStallState("空位");
             stall.setUserId(null);
             stall.setCarId(null);
-            System.out.println(stall);
+            stall.setJssj(null);
+            stall.setKssj(null);
         }else {
             cartService.update(new UpdateWrapper<Cart>().set("carState","已停").eq("carId",stall.getCarId()));
+            Date date = new Date();
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Timestamp timestamp = new Timestamp(date.getTime());
+            stall.setKssj(df.format(timestamp));
+            stall.setStallState("占位");
         }
         if (stallService.updateById(stall)){
             return RespBean.success("修改成功");

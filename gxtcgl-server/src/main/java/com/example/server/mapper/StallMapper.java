@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.example.server.entity.Stall;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
  * <p>
  *  Mapper 接口
@@ -18,4 +20,6 @@ public interface StallMapper extends BaseMapper<Stall> {
     int countStall(Integer areaId);
 
     int ytStall(int areaId);
+
+    List<Stall> ligetYTChest();
 }

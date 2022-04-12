@@ -12,6 +12,10 @@
     </resultMap>
 
     <resultMap id="cartAllMap" type="com.example.server.entity.Cart" extends="BaseResultMap">
+        <association property="carType" javaType="com.example.server.entity.CarType">
+            <id column="tctid" property="id"/>
+            <result column="cType" property="cType"/>
+        </association>
         <association property="user" javaType="com.example.server.entity.User">
             <id column="idu" property="id"/>
             <result column="nameu" property="name"/>
@@ -35,7 +39,7 @@
                 <result column="addressa" property="address"/>
                 <result column="areaNamea" property="areaName"/>
                 <result column="stallCounta" property="stallCount"/>
-                <result column="areaNuma" property="areaNum"/>
+                <result column="areaTypea" property="areaType"/>
             </association>
         </association>
     </resultMap>
@@ -44,38 +48,42 @@
     <sql id="Base_Column_List">
         carId, carType, userId, plateNum, carState
     </sql>
+
     <select id="getAllCarts" resultMap="cartAllMap">
+
         SELECT
-        tc.*, tu.id AS idu,
+        tc.*,tct.id as tctid,tct.cType, tu.id AS idu,
         tu.`name` AS nameu,
         tu.phone AS phoneu,
         tu.mailbox AS mailboxu,
-        tr.roleId as roleIdr,
-        tr.roleName as roleNamer,
+        tr.roleId AS roleIdr,
+        tr.roleName AS roleNamer,
         ts.stallId AS sId,
         ts.stallNum AS stallNums,
         ts.stallState AS stallStates,
         ts.userId AS userIds,
         ts.areaId AS areaIds,
-        ts.carId as carIds,
-        ts.stallNature as stallNatures,
+        ts.carId AS carIds,
+        ts.stallNature AS stallNatures,
         ta.areaId AS areaIda,
         ta.address AS addressa,
         ta.areaName AS areaNamea,
         ta.stallCount AS stallCounta,
-        ta.areaNum AS areaNuma
+        ta.areaType AS areaTypea
         FROM
-        tcgl_cart AS tcv
+        tcgl_cart AS tc
+        LEFT JOIN tcgl_car_type AS tct ON tc.tId=tct.id
         LEFT JOIN tcgl_stall AS ts ON tc.carId = ts.carId
-        LEFT JOIN tcgl_area AS ta ON ts.areaId = ta.areaId INNER JOIN tcgl_user AS tu ON tc.userId = tu.id
+        LEFT JOIN tcgl_area AS ta ON ts.areaId = ta.areaId
+        INNER JOIN tcgl_user AS tu ON tc.userId = tu.id
         LEFT JOIN tcgl_role AS tr ON tu.roleId = tr.roleId
         <where>
-            <if test="cart!=null and cart!=''">
+            <if test="cart!=null">
                 and tc.userId=#{cart.userId}
             </if>
         </where>
         ORDER BY
-        tc.carType,
+        tct.id,
         tc.userId,
         tc.plateNum
 
@@ -83,32 +91,34 @@
     
     <select id="getPageAllCarts" resultMap="cartAllMap">
         SELECT
-            tc.*, tu.id AS idu,
-            tu.`name` AS nameu,
-            tu.phone AS phoneu,
-            tu.mailbox AS mailboxu,
-            tr.roleId as roleIdr,
-            tr.roleName as roleNamer,
-            ts.stallId AS sId,
-            ts.stallNum AS stallNums,
-            ts.stallState AS stallStates,
-            ts.userId AS userIds,
-            ts.areaId AS areaIds,
-            ts.carId as carIds,
-            ts.stallNature as stallNatures,
-            ta.areaId AS areaIda,
-            ta.address AS addressa,
-            ta.areaName AS areaNamea,
-            ta.stallCount AS stallCounta,
-            ta.areaNum AS areaNuma
+        tc.*,tct.id as tctid,tct.cType, tu.id AS idu,
+        tu.`name` AS nameu,
+        tu.phone AS phoneu,
+        tu.mailbox AS mailboxu,
+        tr.roleId AS roleIdr,
+        tr.roleName AS roleNamer,
+        ts.stallId AS sId,
+        ts.stallNum AS stallNums,
+        ts.stallState AS stallStates,
+        ts.userId AS userIds,
+        ts.areaId AS areaIds,
+        ts.carId AS carIds,
+        ts.stallNature AS stallNatures,
+        ta.areaId AS areaIda,
+        ta.address AS addressa,
+        ta.areaName AS areaNamea,
+        ta.stallCount AS stallCounta,
+        ta.areaType AS areaTypea
         FROM
         tcgl_cart AS tc
+        LEFT JOIN tcgl_car_type AS tct ON tc.tId=tct.id
         LEFT JOIN tcgl_stall AS ts ON tc.carId = ts.carId
-        LEFT JOIN tcgl_area AS ta ON ts.areaId = ta.areaId INNER JOIN tcgl_user AS tu ON tc.userId = tu.id
+        LEFT JOIN tcgl_area AS ta ON ts.areaId = ta.areaId
+        INNER JOIN tcgl_user AS tu ON tc.userId = tu.id
         LEFT JOIN tcgl_role AS tr ON tu.roleId = tr.roleId
         <where>
-            <if test="cart.carType!=null and cart.carType!=''">
-                AND tc.carType = #{cart.carType}
+            <if test="cart.tId!=null and cart.tId!=''">
+                AND tc.tId = #{cart.tId}
             </if>
 
             <if test="cart.stall!=null">
@@ -136,7 +146,7 @@
             </if>
         </where>
         ORDER BY
-        tc.carType,
+        tct.id,
         tc.userId,
         tc.plateNum
     </select>

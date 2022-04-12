@@ -47,6 +47,7 @@ public class MailServiceImpl extends ServiceImpl<MailMapper, Mail> implements IM
     private UserMapper userMapper;
 
     @Override
+    @Transactional
     public RespBean sendMail(Mail mail) {
         //保存到数据库
         Date date = new Date();//获取当前的日期

@@ -15,10 +15,54 @@
         <result column="jssj" property="jssj"/>
     </resultMap>
 
+    <resultMap id="getYTCheMap" type="com.example.server.entity.Stall" extends="BaseResultMap">
+        <association property="area" javaType="com.example.server.entity.Area">
+            <id column="areaIda" property="areaId"/>
+            <result column="areaName" property="areaName"/>
+            <result column="address" property="address"/>
+        </association>
+        <association property="user" javaType="com.example.server.entity.User">
+            <id column="id" property="id"/>
+            <result column="name" property="name"/>
+            <result column="phone" property="phone"/>
+            <result column="mailbox" property="mailbox"/>
+        </association>
+        <association property="car" javaType="com.example.server.entity.Cart">
+            <id column="carIdc" property="carId"/>
+            <result column="plateNum" property="plateNum"/>
+            <result column="carType" property="carType"/>
+        </association>
+    </resultMap>
+
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
         stallId, stallNum, stallState, userId, areaId,carId,stallNature,kssj,jssj
     </sql>
+
+    <select id="ligetYTChest" resultMap="getYTCheMap">
+        SELECT
+            s.*, a.areaName,
+            a.address,
+            u.`name`,
+            u.phone,
+            u.mailbox,
+            c.carId as carIdc,
+            c.plateNum,
+            c.carType
+        FROM
+            tcgl_stall AS s,
+            tcgl_area AS a,
+            tcgl_user AS u,
+            tcgl_cart AS c
+        WHERE
+            s.areaId = a.areaId
+        AND s.userId = u.id
+        AND s.carId = c.carId
+        and s.jssj is not null
+        ORDER BY
+            s.stallNature,
+            s.stallNum
+    </select>
 
     <select id="countStall" resultType="int">
         select count(*) from tcgl_stall where areaId=#{areaId}

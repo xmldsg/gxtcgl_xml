@@ -44,7 +44,7 @@ public class Area implements Serializable {
     private Integer stallCount;
 
     @ApiModelProperty(value = "区域编号")
-    private String areaNum;
+    private String areaType;
 
     @ApiModelProperty(value = "是否启用")
     private Boolean enable;

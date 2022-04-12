@@ -5,10 +5,12 @@ import cn.afterturn.easypoi.excel.ExcelExportUtil;
 import cn.afterturn.easypoi.excel.entity.ExportParams;
 import cn.afterturn.easypoi.excel.entity.enmus.ExcelType;
 import com.example.server.entity.Cart;
+import com.example.server.entity.Stall;
 import com.example.server.entity.User;
 import com.example.server.entity.UserInfo;
 import com.example.server.service.ICartService;
 import com.example.server.service.IRoleService;
+import com.example.server.service.IStallService;
 import com.example.server.service.IUserService;
 import com.example.server.utils.PageBean;
 import com.example.server.utils.RespBean;
@@ -47,6 +49,8 @@ public class UserController {
     private ICartService cartService;
     @Autowired
     private IRoleService roleService;
+    @Autowired
+    private IStallService stallService;
 
     @ApiOperation(value = "导出用户资料")
     @GetMapping("/export")
@@ -156,9 +160,11 @@ public class UserController {
     public Map<String, Object> getUserCar(int userId, int carId) {
         User user = userService.getUser(userId);
         Cart cart = cartService.getCar(userId,carId);
+        Stall stall=stallService.getStall(userId,carId);
         Map<String,Object> map=new HashMap<>();
         map.put("user",user);
         map.put("car",cart);
+        map.put("stall",stall);
         return map;
     }
 

@@ -10,6 +10,7 @@ import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -54,14 +55,23 @@ public class Stall implements Serializable {
     private String stallNature;
 
     @ApiModelProperty(value = "停车时间")
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private String kssj;
 
     @ApiModelProperty(value = "停车结束时间")
+    @TableField(updateStrategy = FieldStrategy.IGNORED)
     private String jssj;
 
     @ApiModelProperty(value = "区域信息")
     @TableField(exist = false)
     private Area area;
 
+    @ApiModelProperty(value = "用户信息")
+    @TableField(exist = false)
+    private User user;
+
+    @ApiModelProperty(value = "车辆信息")
+    @TableField(exist = false)
+    private Cart car;
 
 }
