@@ -14,4 +14,12 @@
         id, carTypeId, aId
     </sql>
 
+    <insert id="insertRecord">
+        insert into tcgl_area_role(carTypeId,aId)
+        values
+        <foreach collection="aIds" item="aId" separator=",">
+            (#{carTypeId},#{aId})
+        </foreach>
+    </insert>
+
 </mapper>

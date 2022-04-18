@@ -43,10 +43,14 @@
     <resultMap id="UserPageMap" type="com.example.server.entity.UserInfo" extends="BaseResultMapTow">
         <collection property="cartList" ofType="com.example.server.entity.Cart">
             <id column="carId" property="carId" />
-            <result column="carType" property="carType" />
+            <result column="tId" property="tId" />
             <result column="userId" property="userId" />
             <result column="plateNum" property="plateNum" />
             <result column="carState" property="carState" />
+            <association property="carType" javaType="com.example.server.entity.CarType">
+                <id column="ctId" property="id"/>
+                <result column="cType" property="cType"/>
+            </association>
         </collection>
     </resultMap>
 
@@ -71,10 +75,13 @@
     <select id="getUserPage" resultMap="UserPageMap">
         SELECT
         u.*,
-        c.carId,c.carType,c.userId,c.plateNum,c.carState
+        c.carId,c.tId,c.userId,c.plateNum,c.carState,
+        ct.cType as cType,
+        ct.id AS ctId
         FROM tcgl_user AS u
         LEFT JOIN tcgl_cart AS c
         ON u.id=c.userId
+        LEFT JOIN tcgl_car_type AS ct ON c.tId = ct.id
         WHERE u.roleId=#{userInfo.roleId}
         <if test="userInfo.name!=null and userInfo.name!=''">
             AND u.`name` like CONCAT('%',#{userInfo.name},'%')
@@ -99,7 +106,5 @@
         </if>
         order by u.name
     </select>
-
-
 
 </mapper>

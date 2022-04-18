@@ -30,7 +30,11 @@
         <association property="car" javaType="com.example.server.entity.Cart">
             <id column="carIdc" property="carId"/>
             <result column="plateNum" property="plateNum"/>
-            <result column="carType" property="carType"/>
+            <result column="tId" property="tId"/>
+            <association property="carType" javaType="com.example.server.entity.CarType">
+                <id column="ctId" property="id"/>
+                <result column="cType" property="cType"/>
+            </association>
         </association>
     </resultMap>
 
@@ -48,16 +52,21 @@
             u.mailbox,
             c.carId as carIdc,
             c.plateNum,
-            c.carType
+            c.tid,
+            ct.id as ctId,
+            ct.cType as cType
+
         FROM
             tcgl_stall AS s,
             tcgl_area AS a,
             tcgl_user AS u,
-            tcgl_cart AS c
+            tcgl_cart AS c,
+            tcgl_car_type as ct
         WHERE
             s.areaId = a.areaId
         AND s.userId = u.id
         AND s.carId = c.carId
+        and c.tid=ct.id
         and s.jssj is not null
         ORDER BY
             s.stallNature,

@@ -1,9 +1,11 @@
 package com.example.server.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.example.server.entity.CarType;
 import com.example.server.entity.Cart;
 import com.example.server.entity.Role;
 import com.example.server.entity.User;
+import com.example.server.service.ICarTypeService;
 import com.example.server.service.ICartService;
 import com.example.server.service.IRoleService;
 import com.example.server.service.IUserService;
@@ -33,11 +35,21 @@ public class RegisterController {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private ICartService cartService;
+    @Autowired
+    private ICarTypeService carTypeService;
 
     @ApiOperation(value = "获取角色列表")
     @GetMapping("/role")
     public List<Role> getallRole(){
         return roleService.list(new QueryWrapper<Role>().notIn("roleId",3));
+    }
+
+
+
+    @ApiOperation(value = "获取车辆类型列表")
+    @GetMapping("/clist")
+    public List<CarType> getList(){
+        return carTypeService.list();
     }
 
     @ApiOperation(value = "注册用户")

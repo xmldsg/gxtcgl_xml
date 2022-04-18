@@ -14,7 +14,7 @@ import java.sql.SQLIntegrityConstraintViolationException;
  * @author zhoubin
  * @since 1.0.0
  */
-@RestControllerAdvice
+//@RestControllerAdvice
 public class GlobalException {
 
 	@ExceptionHandler(SQLException.class)

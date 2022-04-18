@@ -5,7 +5,7 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.example.server.entity.Cart">
         <id column="carId" property="carId" />
-        <result column="carType" property="carType" />
+        <result column="tId" property="tId" />
         <result column="userId" property="userId" />
         <result column="plateNum" property="plateNum" />
         <result column="carState" property="carState" />
@@ -46,13 +46,13 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        carId, carType, userId, plateNum, carState
+        carId, tId, userId, plateNum, carState
     </sql>
 
     <select id="getAllCarts" resultMap="cartAllMap">
 
         SELECT
-        tc.*,tct.id as tctid,tct.cType, tu.id AS idu,
+        tc.*,tct.id as tctid,tct.cType as cType, tu.id AS idu,
         tu.`name` AS nameu,
         tu.phone AS phoneu,
         tu.mailbox AS mailboxu,
@@ -91,7 +91,7 @@
     
     <select id="getPageAllCarts" resultMap="cartAllMap">
         SELECT
-        tc.*,tct.id as tctid,tct.cType, tu.id AS idu,
+        tc.*,tct.id as tctid,tct.cType as cType,tu.id AS idu,
         tu.`name` AS nameu,
         tu.phone AS phoneu,
         tu.mailbox AS mailboxu,
