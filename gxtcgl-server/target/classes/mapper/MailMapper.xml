@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.server.mapper.MailMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.example.server.entity.Mail">
+        <id column="id" property="id" />
+        <result column="mailTitle" property="mailTitle" />
+        <result column="mailText" property="mailText" />
+        <result column="sendFrom" property="sendFrom" />
+        <result column="sendTo" property="sendTo" />
+        <result column="sendTime" property="sendTime" />
+        <result column="userId" property="userId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, mailTitle, mailText, sendFrom, sendTo, sendTime, userId
+    </sql>
+
+</mapper>

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.server.mapper.CartMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.example.server.entity.Cart">
+        <id column="carId" property="carId" />
+        <result column="tId" property="tId" />
+        <result column="userId" property="userId" />
+        <result column="plateNum" property="plateNum" />
+        <result column="carState" property="carState" />
+    </resultMap>
+
+    <resultMap id="cartAllMap" type="com.example.server.entity.Cart" extends="BaseResultMap">
+        <association property="carType" javaType="com.example.server.entity.CarType">
+            <id column="tctid" property="id"/>
+            <result column="cType" property="cType"/>
+        </association>
+        <association property="user" javaType="com.example.server.entity.User">
+            <id column="idu" property="id"/>
+            <result column="nameu" property="name"/>
+            <result column="phoneu" property="phone"/>
+            <result column="mailboxu" property="mailbox"/>
+            <association property="role" javaType="com.example.server.entity.Role">
+                <id column="roleIdr" property="roleId"/>
+                <result column="roleNamer" property="roleName"/>
+            </association>
+        </association>
+        <association property="stall" javaType="com.example.server.entity.Stall">
+            <id column="sId" property="stallId"/>
+            <result column="stallNums" property="stallNum"/>
+            <result column="stallStates" property="stallState"/>
+            <result column="userIds" property="userId"/>
+            <result column="areaIds" property="areaId"/>
+            <result column="carIds" property="carId"/>
+            <result column="stallNatures" property="stallNature"/>
+            <association property="area" javaType="com.example.server.entity.Area">
+                <id column="areaIda" property="areaId"/>
+                <result column="addressa" property="address"/>
+                <result column="areaNamea" property="areaName"/>
+                <result column="stallCounta" property="stallCount"/>
+                <result column="areaTypea" property="areaType"/>
+            </association>
+        </association>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        carId, tId, userId, plateNum, carState
+    </sql>
+
+    <select id="getAllCarts" resultMap="cartAllMap">
+
+        SELECT
+        tc.*,tct.id as tctid,tct.cType as cType, tu.id AS idu,
+        tu.`name` AS nameu,
+        tu.phone AS phoneu,
+        tu.mailbox AS mailboxu,
+        tr.roleId AS roleIdr,
+        tr.roleName AS roleNamer,
+        ts.stallId AS sId,
+        ts.stallNum AS stallNums,
+        ts.stallState AS stallStates,
+        ts.userId AS userIds,
+        ts.areaId AS areaIds,
+        ts.carId AS carIds,
+        ts.stallNature AS stallNatures,
+        ta.areaId AS areaIda,
+        ta.address AS addressa,
+        ta.areaName AS areaNamea,
+        ta.stallCount AS stallCounta,
+        ta.areaType AS areaTypea
+        FROM
+        tcgl_cart AS tc
+        LEFT JOIN tcgl_car_type AS tct ON tc.tId=tct.id
+        LEFT JOIN tcgl_stall AS ts ON tc.carId = ts.carId
+        LEFT JOIN tcgl_area AS ta ON ts.areaId = ta.areaId
+        INNER JOIN tcgl_user AS tu ON tc.userId = tu.id
+        LEFT JOIN tcgl_role AS tr ON tu.roleId = tr.roleId
+        <where>
+            <if test="cart!=null">
+                and tc.userId=#{cart.userId}
+            </if>
+        </where>
+        ORDER BY
+        tct.id,
+        tc.userId,
+        tc.plateNum
+
+    </select>
+    
+    <select id="getPageAllCarts" resultMap="cartAllMap">
+        SELECT
+        tc.*,tct.id as tctid,tct.cType as cType,tu.id AS idu,
+        tu.`name` AS nameu,
+        tu.phone AS phoneu,
+        tu.mailbox AS mailboxu,
+        tr.roleId AS roleIdr,
+        tr.roleName AS roleNamer,
+        ts.stallId AS sId,
+        ts.stallNum AS stallNums,
+        ts.stallState AS stallStates,
+        ts.userId AS userIds,
+        ts.areaId AS areaIds,
+        ts.carId AS carIds,
+        ts.stallNature AS stallNatures,
+        ta.areaId AS areaIda,
+        ta.address AS addressa,
+        ta.areaName AS areaNamea,
+        ta.stallCount AS stallCounta,
+        ta.areaType AS areaTypea
+        FROM
+        tcgl_cart AS tc
+        LEFT JOIN tcgl_car_type AS tct ON tc.tId=tct.id
+        LEFT JOIN tcgl_stall AS ts ON tc.carId = ts.carId
+        LEFT JOIN tcgl_area AS ta ON ts.areaId = ta.areaId
+        INNER JOIN tcgl_user AS tu ON tc.userId = tu.id
+        LEFT JOIN tcgl_role AS tr ON tu.roleId = tr.roleId
+        <where>
+            <if test="cart.tId!=null and cart.tId!=''">
+                AND tc.tId = #{cart.tId}
+            </if>
+
+            <if test="cart.stall!=null">
+                <if test="cart.stall.stallNum!=null and cart.stall.stallNum!=''">
+                    AND ts.stallNum = #{cart.stall.stallNum} and ts.stallNature=#{cart.stall.stallNature}
+                </if>
+                <if test="cart.stall.area!=null">
+                    <if test="cart.stall.area.address!=null and cart.stall.area.address!=''">
+                        AND ta.address = #{cart.stall.area.address}
+                    </if>
+                    <if test="cart.stall.area.areaName!=null and cart.stall.area.areaName!=''">
+                        AND ta.areaName = #{cart.stall.area.areaName}
+                    </if>
+                </if>
+            </if>
+            <if test="cart.user!=null">
+                <if test="cart.user.role!=null">
+                    <if test="cart.user.role.roleId!=null and cart.user.role.roleId!=''">
+                        AND tr.roleId = #{cart.user.role.roleId}
+                    </if>
+                </if>
+            </if>
+            <if test="cart.plateNum!=null and cart.plateNum!=''">
+                AND tc.plateNum LIKE CONCAT('%', #{cart.plateNum}, '%')
+            </if>
+        </where>
+        ORDER BY
+        tct.id,
+        tc.userId,
+        tc.plateNum
+    </select>
+
+</mapper>

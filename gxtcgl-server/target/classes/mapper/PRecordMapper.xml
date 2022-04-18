@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.server.mapper.PRecordMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.example.server.entity.PRecord">
+        <id column="id" property="id" />
+        <result column="sId" property="sId" />
+        <result column="tcsj" property="tcsj" />
+        <result column="lksj" property="lksj" />
+        <result column="uId" property="uId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, sId, tcsj, lksj, uId
+    </sql>
+
+</mapper>

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.server.mapper.StallMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.example.server.entity.Stall">
+        <id column="stallId" property="stallId" />
+        <result column="stallNum" property="stallNum" />
+        <result column="stallState" property="stallState" />
+        <result column="userId" property="userId" />
+        <result column="areaId" property="areaId" />
+        <result column="carId" property="carId"/>
+        <result column="stallNature" property="stallNature"/>
+        <result column="kssj" property="kssj"/>
+        <result column="jssj" property="jssj"/>
+    </resultMap>
+
+    <resultMap id="getYTCheMap" type="com.example.server.entity.Stall" extends="BaseResultMap">
+        <association property="area" javaType="com.example.server.entity.Area">
+            <id column="areaIda" property="areaId"/>
+            <result column="areaName" property="areaName"/>
+            <result column="address" property="address"/>
+        </association>
+        <association property="user" javaType="com.example.server.entity.User">
+            <id column="id" property="id"/>
+            <result column="name" property="name"/>
+            <result column="phone" property="phone"/>
+            <result column="mailbox" property="mailbox"/>
+        </association>
+        <association property="car" javaType="com.example.server.entity.Cart">
+            <id column="carIdc" property="carId"/>
+            <result column="plateNum" property="plateNum"/>
+            <result column="tId" property="tId"/>
+            <association property="carType" javaType="com.example.server.entity.CarType">
+                <id column="ctId" property="id"/>
+                <result column="cType" property="cType"/>
+            </association>
+        </association>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        stallId, stallNum, stallState, userId, areaId,carId,stallNature,kssj,jssj
+    </sql>
+
+    <select id="ligetYTChest" resultMap="getYTCheMap">
+        SELECT
+            s.*, a.areaName,
+            a.address,
+            u.`name`,
+            u.phone,
+            u.mailbox,
+            c.carId as carIdc,
+            c.plateNum,
+            c.tid,
+            ct.id as ctId,
+            ct.cType as cType
+
+        FROM
+            tcgl_stall AS s,
+            tcgl_area AS a,
+            tcgl_user AS u,
+            tcgl_cart AS c,
+            tcgl_car_type as ct
+        WHERE
+            s.areaId = a.areaId
+        AND s.userId = u.id
+        AND s.carId = c.carId
+        and c.tid=ct.id
+        and s.jssj is not null
+        ORDER BY
+            s.stallNature,
+            s.stallNum
+    </select>
+
+    <select id="countStall" resultType="int">
+        select count(*) from tcgl_stall where areaId=#{areaId}
+    </select>
+    <select id="ytStall" resultType="int">
+        SELECT count(*)
+        FROM tcgl_stall AS s
+        WHERE s.areaId is not null and s.userId is not NULL
+        AND s.areaId=#{areaId}
+    </select>
+</mapper>

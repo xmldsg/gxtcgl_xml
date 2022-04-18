@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.server.mapper.AreaMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.example.server.entity.Area">
+        <id column="areaId" property="areaId" />
+        <result column="address" property="address" />
+        <result column="areaName" property="areaName" />
+        <result column="stallCount" property="stallCount" />
+        <result column="areaType" property="areaType"/>
+        <result column="enable" property="enable"/>
+        <result column="parent" property="parent"/>
+    </resultMap>
+
+    <resultMap id="getAllAreaMap" type="com.example.server.entity.Area" extends="BaseResultMap">
+        <association property="count" javaType="int" select="com.example.server.mapper.StallMapper.countStall" column="areaId">
+        </association>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        areaId, address, areaName, stallCount,areaType,enable,parent
+    </sql>
+
+    <select id="getAllArea" resultMap="getAllAreaMap">
+        SELECT * FROM tcgl_area
+        <where>
+            <if test="enable!=null and enable!=''">
+                enable=#{enable}
+            </if>
+        </where>
+                order by areaId,address,areaName
+    </select>
+
+</mapper>

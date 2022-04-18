@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.server.mapper.UserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.example.server.entity.User">
+        <id column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="name" property="name"/>
+        <result column="userFace" property="userFace"/>
+        <result column="phone" property="phone"/>
+        <result column="roleId" property="roleId"/>
+        <result column="mailbox" property="mailbox"/>
+    </resultMap>
+    <resultMap id="BaseResultMapTow" type="com.example.server.entity.UserInfo">
+        <id column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="name" property="name"/>
+        <result column="userFace" property="userFace"/>
+        <result column="phone" property="phone"/>
+        <result column="roleId" property="roleId"/>
+        <result column="mailbox" property="mailbox"/>
+    </resultMap>
+
+    <resultMap id="GetAllAdminAndRole" type="com.example.server.entity.User" extends="BaseResultMap">
+        <association property="role" javaType="com.example.server.entity.Role">
+            <id column="rroleId" property="roleId"/>
+            <result column="rroleName" property="roleName"/>
+            <result column="rrolePower" property="rolePower"/>
+        </association>
+    </resultMap>
+
+    <resultMap id="getUserListMap" type="com.example.server.entity.UserInfo" extends="BaseResultMap">
+        <association property="role" javaType="com.example.server.entity.Role">
+            <id column="rroleId" property="roleId"/>
+            <result column="rroleName" property="roleName"/>
+            <result column="rrolePower" property="rolePower"/>
+        </association>
+    </resultMap>
+
+    <resultMap id="UserPageMap" type="com.example.server.entity.UserInfo" extends="BaseResultMapTow">
+        <collection property="cartList" ofType="com.example.server.entity.Cart">
+            <id column="carId" property="carId" />
+            <result column="tId" property="tId" />
+            <result column="userId" property="userId" />
+            <result column="plateNum" property="plateNum" />
+            <result column="carState" property="carState" />
+            <association property="carType" javaType="com.example.server.entity.CarType">
+                <id column="ctId" property="id"/>
+                <result column="cType" property="cType"/>
+            </association>
+        </collection>
+    </resultMap>
+
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id,username, password, name, userFace, phone, roleId,mailbox
+    </sql>
+    <select id="getUserList" resultMap="getUserListMap">
+        SELECT
+        u.*,
+        r.roleId AS rroleId,
+        r.roleName AS rroleName,
+        r.rolePower AS rrolePower
+        FROM tcgl_user AS u,
+        tcgl_role AS r
+        WHERE u.roleId=r.roleId
+        and u.roleId!=3
+        order by rroleName,u.`name`
+    </select>
+
+    <select id="getUserPage" resultMap="UserPageMap">
+        SELECT
+        u.*,
+        c.carId,c.tId,c.userId,c.plateNum,c.carState,
+        ct.cType as cType,
+        ct.id AS ctId
+        FROM tcgl_user AS u
+        LEFT JOIN tcgl_cart AS c
+        ON u.id=c.userId
+        LEFT JOIN tcgl_car_type AS ct ON c.tId = ct.id
+        WHERE u.roleId=#{userInfo.roleId}
+        <if test="userInfo.name!=null and userInfo.name!=''">
+            AND u.`name` like CONCAT('%',#{userInfo.name},'%')
+        </if>
+        order by u.name
+
+    </select>
+
+    <select id="getAllAdmin" resultMap="GetAllAdminAndRole">
+        SELECT
+        u.*,
+        r.roleId AS rroleId,
+        r.roleName AS rroleName,
+        r.rolePower AS rrolePower
+        FROM tcgl_user AS u,
+        tcgl_role AS r
+        WHERE u.roleId=r.roleId
+        AND u.id!=#{id}
+        and u.roleId=3
+        <if test="keywords!=null and keywords!=''">
+            and u.name like concat('%',#{keywords},'%')
+        </if>
+        order by u.name
+    </select>
+
+</mapper>
